@@ -18,7 +18,7 @@ def invalid_count_resp(err_msg) -> Response:
     :return: A response with invalid request badge
     """
     svg = badge(left_text="Error", right_text=err_msg,
-                whole_link="https://github.com/jwenjian/visitor-badge")
+                whole_link="https://github.com/sczhou/visitor-badge")
     expiry_time = datetime.datetime.utcnow() - datetime.timedelta(minutes=10)
 
     headers = {'Cache-Control': 'no-cache,max-age=0',
@@ -50,7 +50,7 @@ def visitor_svg() -> Response:
     req_source = identity_request_source()
 
     if not req_source:
-        return invalid_count_resp('Missing required param: page_id')
+        return invalid_count_resp('None')
 
     latest_count = update_counter(req_source)
 
@@ -90,7 +90,7 @@ def index() -> Response:
 
 def identity_request_source() -> str:
     page_id = request.args.get('page_id')
-    if page_id is not None and len(page_id):
+    if page_id is not None and len(page_id) and 'sczhou' in page_id:
         m = md5(page_id.encode('utf-8'))
         m.update(environ.get('md5_key').encode('utf-8'))
         return m.hexdigest()
